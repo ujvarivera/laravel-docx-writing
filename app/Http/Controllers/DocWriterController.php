@@ -9,14 +9,20 @@ class DocWriterController extends Controller
     public function index() 
     {
         try {
-            $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('sample.docx');
-            $templateProcessor->setValue('ugyfelnev', 'Kiss Béla Zrt.');
-            $templateProcessor->setValue('cim', '9400 Sopron, Új utca 52');
-            $templateProcessor->setValue('vezeto', 'Kiss Béla');
-            $templateProcessor->setValue('telefonszam', '+36325646644');
-            $templateProcessor->saveAs('word.docx');
+            if (auth()->check()) {
 
-            return('Writing the doc file was successful');
+                $customer = auth()->user()->customer;
+
+                $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('sample.docx');
+                $templateProcessor->setValue('customername', $customer->name);
+                $templateProcessor->setValue('address', $customer->address);
+                $templateProcessor->setValue('leader', $customer->leader);
+                $templateProcessor->setValue('phone', $customer->phone);
+                $templateProcessor->saveAs('doc_' . $customer->id .'.docx');
+    
+                return('Writing the doc file was successful');
+            }
+            abort(403, 'Please login to continue!');
 
         } catch (\Error $e) {
             abort(500, $e->getMessage());
