@@ -32,3 +32,4 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 Route::get('/docwriter', [DocWriterController::class, 'index'])->name('docwriter.index');
+Route::get('/maketable', [DocWriterController::class, 'maketable'])->name('docwriter.maketable');
